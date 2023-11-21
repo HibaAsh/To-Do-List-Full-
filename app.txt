@@ -1,0 +1,134 @@
+<div class="home">
+    <div class="row h-100 w-100 m-0">
+      <div class="offcanvas-container col-lg-3 m-0">
+        <div :class="[screen_width > '992' ? 'offcanvas-lg' : 'offcanvas', 'offcanvas-start', 'mt-lg-5']" tabindex="-1" id="navbarMenu" aria-labelledby="navbarMenu">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasLabel">{{ $t('sideBarHeader') }}</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body main-container">
+            <div class="row row-cols-1 me-2">
+              <div class="col mt-3 mb-4">
+                <div class="d-flex justify-content-evenly">  
+                  <div class="ps-1"><input class="form-control px-2" type="search" :placeholder="$t('searchPlaceHolder')"></div>
+                  <div class="row row-cols-2 ps-2" v-if="username">
+                    <div class="col py-0">
+                      <router-link to="/profile/">
+                        <span class="bi bi-person-circle coloring text-light fs-3 p-0" data-bs-toggle="tooltip" :title="username"></span>
+                      </router-link>
+                    </div>
+                    <div class="col py-0">
+                      <button class="btn p-0">
+                        <router-link to="/logout/">
+                          <span class="bi bi-box-arrow-right coloring text-light fs-3 p-0" data-bs-toggle="tooltip" :title="$t('logoutToolTip')"></span>
+                        </router-link>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row row-cols-2 ps-2" v-else>
+                    <div class="col">
+                      <router-link to="/register/">
+                        <span class="bi bi-person-add coloring text-light fs-4" data-bs-toggle="tooltip" :title="$t('registerToolTip')"></span>
+                      </router-link>
+                    </div>
+                    <div class="col">
+                      <router-link to="/login/">
+                        <span class="bi bi-box-arrow-in-right coloring text-light fs-4" data-bs-toggle="tooltip" :title="$t('loginToolTip')"></span>
+                      </router-link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col mt-2">
+                <hr class="text-light coloring my-0 ms-2 w-100">
+                <div class="row row-cols-1 my-4 mx-lg-auto ps-3">
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/show_all/">
+                      <span class="bi bi-star-fill">{{ $t('all') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ all_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/show_unread/">
+                      <span class="bi bi-star-fill">{{ $t('unread') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ unread_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/important/">
+                      <span class="bi bi-star-fill">{{ $t('important') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ important_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/completed/">
+                      <span class="bi bi-star-fill"> {{ $t('completed') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ completed_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/today/">
+                      <span class="bi bi-star-fill">{{ $t('today') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ today_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/upcoming/">
+                      <span class="bi bi-star-fill">{{ $t('upcoming') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ upcoming_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                  <div class="col d-flex justify-content-start position-relative">
+                    <router-link to="/missed/">
+                      <span class="bi bi-star-fill">{{ $t('missed') }}</span>
+                      <span class="translate-middle badge rounded-pill bg-danger">{{ missed_tasks.length }}</span>
+                    </router-link>
+                  </div>
+                </div>
+                <hr class="text-light coloring my-0 ms-2 w-100">
+                <div class="row row-cols-1 mt-4 mx-lg-auto ps-3" v-if="username">
+                  <div class="col d-flex justify-content-start mt-1">
+                    <router-link to="/add_task/">
+                      <span class="bi bi-star-fill me-2"> Add task</span>
+                    </router-link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-9 p-0">
+          <nav class="navbar d-flex justify-content-between">
+            <div class="nav-item d-lg-none">
+              <button class="btn" data-bs-toggle="offcanvas" href="#navbarMenu" role="button" aria-controls="navbarMenu">
+                <span class="bi bi-text-left toggle-icon"></span>
+              </button>
+            </div>
+            <div class="nav-item px-3">
+              <router-link to="/" class="nav-link">{{ $t('home') }}</router-link>
+            </div>
+          </nav>
+        <router-view/>
+      </div>
+    </div>
+    <div class="position-fixed bottom-0 start-0 m-3">
+      <button class="btn btn-primary text-white graySpan dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-sun-fill" id="chooseTheme"></i></button>
+      <div class="dropdown">
+          <ul class="list-unstyled dropdown-menu">
+              <li><button class="dropdown-item" @click="lightTheme"><span class="bi bi-sun-fill"></span> Light</button></li>
+              <li><button class="dropdown-item" @click="darkTheme"><span class="bi bi-moon-stars-fill"></span> Dark</button></li>
+              <li><button class="dropdown-item" @click="autoTheme"><span class="bi bi-circle-half"></span> Auto</button></li>
+          </ul>
+        </div>
+    </div>
+    <div class="position-fixed bottom-0 end-0 m-3">
+        <button class="btn btn-primary text-white graySpan dropdown-toggle" data-bs-toggle="dropdown"><i class="flag flag-us" id="chooseLang"></i></button>
+        <div class="dropdown">
+            <ul class="list-unstyled dropdown-menu">
+                <li><button class="dropdown-item" @click="arabicLang"><i class="flag flag-syria"></i> Arabic</button></li>
+                <li><button class="dropdown-item" @click="englishLang"><i class="flag flag-us"></i> English</button></li>
+            </ul>
+          </div>
+    </div>
+  </div>

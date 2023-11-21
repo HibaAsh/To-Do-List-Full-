@@ -1,0 +1,245 @@
+in show.vue:
+
+
+            <div class="table-responsive w-100 my-3">
+                <table class="task table table-striped caption-top">
+                    <caption>
+                        <h3 class="text-primary text-center mb-4">All tasks</h3>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <!-- <th>Description</th>
+                            <th>Due to</th>
+                            <th>Important</th>
+                            <th>Completed</th> -->
+                            <th>Configure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="task in cur_user_tasks" :key="task.id">
+                            <td scope="row">
+                                <router-link :to="{ name: 'TaskView' , params: {id: task.id} }" class="d-flex justify-content-center">
+                                    <div class="text-center p-md-1">
+                                        {{ task.name_en  }}
+                                    </div>
+                                </router-link>
+                            </td>  
+                            <!-- <td>{{ task.description_en }}</td> 
+                            <td>{{ task.due_to_date }} || {{ task.due_to_time }}</td> 
+                            <td>{{ task.important }}</td>
+                            <td>{{ task.completed }}</td> -->
+                            <td>
+                                <router-link :to="{ name: 'EditTaskView' , params: {id: task.id} }" :class="[screen_width > '400' ? 'btn-sm' : 'btn-xs', 'btn', 'btn-primary', 'me-2', 'text-light']">Edit</router-link>
+                                <button :class="[screen_width > '400' ? 'btn-sm' : 'btn-xs', 'btn', 'btn-primary']" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                            </td>
+                            <td v-if="admin">{{ task.user }}</td>
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title text-primary" id="deleteModalLabel">{{ task.name_en }}</h4>
+                                            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete this task ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button :class="[screen_width > '400' ? 'btn-sm' : 'btn-xs', 'btn', 'btn-primary']" @click="deleteTask(task)" data-bs-dismiss="modal">Confirm</button>
+                                            <button :class="[screen_width > '400' ? 'btn-sm' : 'btn-xs', 'btn', 'btn-secondary']" data-bs-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+**********************************************
+
+<div class="container-fluid row row-cols-1 row-cols-md-2 mx-auto">
+                <div class="task col p-3" v-for="task in cur_user_tasks" :key="task.id">
+                    <h2>{{ task.name_en }}</h2>
+                    <div class="row row-cols-2">
+                        <div class="col-5 my-auto">
+                            <router-link :to="{ name: 'EditTaskView' , params: {id: task.id} }" class="btn btn-primary btn-sm me-2 text-light w-50">Edit</router-link>
+                        </div>
+                        <div class="col-5 my-auto">
+                            <button class="btn btn-primary btn-sm w-50" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                        </div>
+                    </div>
+                    <div class="creater my-auto pe-3" v-if="admin">{{ task.user }}</div>
+
+                    <!-- delete modal -->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-primary" id="deleteModalLabel">{{ task.name_en }}</h4>
+                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this task ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" @click="deleteTask(task)" data-bs-dismiss="modal">Confirm</button>
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+**********************************************
+
+
+
+app.vue
+
+  <div class="home" :dir="page_direction">
+    <div class="container-fluid">
+      <!-- navbar -->
+      <header class="d-flex justify-content-between pt-2">
+          <button class="d-lg-none btn p-0 mt-2" data-bs-toggle="offcanvas" href="#navbarMenu" role="button" aria-controls="navbarMenu">
+            <span :class="[(lang === 'en') ? 'bi-text-left' : 'bi-text-right', 'bi', 'toggle-icon']"></span>
+          </button>
+          <router-link to="/" class="nav-link"><h5 class="m-0 p-0 pb-lg-2">{{ $t('home') }}</h5></router-link>
+      </header>
+
+      <!-- content -->
+      <!-- <main class="row">
+        <div :class="[(screen_width > 991) ? 'offcanvas-lg' : 'offcanvas', 'shadow', offcanvas_direction, 'my-offcanvas', 'pt-lg-4', 'col-lg-3']" tabindex="-1" id="navbarMenu" aria-labelledby="navbarMenu">
+          <div class="offcanvas-header my-5 m-0 p-0 mx-1">
+            <h5 class="offcanvas-title" id="offcanvasLabel">{{ $t('sideBarHeader') }}</h5>
+            <button class="btn-close shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body row row-cols-1">
+            <div class="col row row-cols-2 m-0 p-0 px-lg-2" style="height: fit-content;">
+              <div class="col-8 m-0 p-0">
+                <input class="form-control w-100 mx-md-3" type="search" :placeholder="$t('searchPlaceHolder')">
+              </div>
+              <div class="col-4 m-0 p-0">
+                <div class="d-flex justify-content-evenly" v-if="username">
+                  <router-link to="/profile/" class="px-lg-2">
+                    <span class="bi bi-person-circle profile-icons text-light" data-bs-toggle="tooltip" :title="username"></span>
+                  </router-link>
+                  <router-link to="/logout/">
+                    <span class="bi bi-box-arrow-right profile-icons text-light" data-bs-toggle="tooltip" :title="$t('logoutToolTip')"></span>
+                  </router-link>
+                </div>
+                <div class="d-flex justify-content-evenly" v-else>
+                  <router-link to="/register/" class="px-lg-2">
+                    <span class="bi bi-person-add profile-icons text-light" data-bs-toggle="tooltip" :title="$t('registerToolTip')"></span>
+                  </router-link>
+                  <router-link to="/login/">
+                    <span class="bi bi-box-arrow-in-right profile-icons text-light" data-bs-toggle="tooltip" :title="$t('loginToolTip')"></span>
+                  </router-link>
+                </div>
+              </div>
+            </div>
+            <hr class="mx-auto w-75 my-lg-5">
+            <div class="col m-0">
+              <div class="">
+                <router-link to="/show_all/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('all') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ all_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+              <div class="">
+                <router-link to="/show_unread/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('unread') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ unread_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+              <div class="">
+                <router-link to="/important/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('important') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ important_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+              <div class="">
+                <router-link to="/completed/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('completed') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ completed_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+              <div class="">
+                <router-link to="/today/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('today') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ today_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+              <div class="">
+                <router-link to="/upcoming/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('upcoming') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ upcoming_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+              <div class="">
+                <router-link to="/missed/">
+                  <div class="d-flex justify-content-between">
+                    <span class="bi bi-star-fill mx-lg-2"><p class="d-inline mx-1 mx-lg-2">{{ $t('missed') }}</p></span>
+                    <span class="translate-middle badge rounded-pill bg-danger mx-1 mx-lg-2">{{ missed_tasks.length }}</span>
+                  </div>
+                </router-link>
+              </div>
+            </div>
+            <hr class="mx-auto w-75 my-lg-5">
+            <div class="col">
+              <div class="" v-if="username">
+                <router-link to="/add_task/">
+                  <div class="d-flex justify-content-start">
+                    <span class="bi bi-star-fill"><p class="d-inline mx-1">{{ $t('addTask') }}</p></span>
+                  </div>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-9">
+          <router-view/>
+        </div>
+      </main> -->
+
+      <!-- fixed bottom button -->
+      <footer>
+        <div class="position-fixed bottom-0 start-0 m-3">
+            <button :class="['btn', 'btn-primary', 'text-white', 'dropdown-toggle']" data-bs-toggle="dropdown">
+              <i class="bi bi-sun-fill" id="chooseTheme"></i>
+            </button>
+            <div class="dropdown">
+                <ul class="list-unstyled dropdown-menu">
+                    <li><button class="dropdown-item" @click="lightTheme"><i class="bi bi-sun-fill"></i></button></li>
+                    <li><button class="dropdown-item" @click="darkTheme"><i class="bi bi-moon-stars-fill"></i></button></li>
+                    <li><button class="dropdown-item" @click="autoTheme"><i class="bi bi-circle-half"></i></button></li>
+                </ul>
+              </div>
+        </div>
+        <div class="position-fixed bottom-0 end-0 m-3">
+            <button :class="['btn', 'btn-primary', 'dropdown-toggle']" data-bs-toggle="dropdown">
+                <i class="flag flag-us" id="chooseLang"></i>
+            </button>
+            <div class="dropdown">
+                <ul class="list-unstyled dropdown-menu">
+                    <li><button class="dropdown-item" @click="arabicLang"><i class="flag flag-syria"></i> العربية</button></li>
+                    <li><button class="dropdown-item" @click="englishLang"><i class="flag flag-us"></i> English</button></li>
+                </ul>
+            </div>
+        </div>
+      </footer>
+    </div>
+  </div>
